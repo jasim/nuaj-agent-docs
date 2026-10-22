@@ -41,8 +41,10 @@ starlight({
 });
 ```
 
-Every page slug must start with a section `prefix` to appear in that
-section's indexes. `canonicalOrigin` defaults to Astro's `site`;
+A page appears in a section's indexes when its slug is the section's
+`prefix` (the section's own page) or starts with `<prefix>/`. Pages in a
+top-level sidebar group are listed under its label; pages outside any group,
+under "Overview". `canonicalOrigin` defaults to Astro's `site`;
 `retrievalOrigin` (where agents fetch Markdown) defaults to it. `links` adds
 `## heading` groups of extra links to the root or a section index.
 `replacements` substitutes literal tokens in Markdown bodies, for tokens a

@@ -141,6 +141,14 @@
   --accent: #5fbf8d;
   --quote: #b2b7bd;
   --highlight: #24404d;
+
+  /*
+   * The light values are a dark teal on a pale ground; dark mode flips them,
+   * or the current sidebar item and search highlights vanish into the page.
+   */
+  --sl-color-accent-low: #183632;
+  --sl-color-accent-high: #c2eadf;
+  --sl-color-text-invert: var(--bg);
 }
 
 @media (min-width: 50rem) {
@@ -676,7 +684,8 @@ h1#starlight__page-title {
   content: "JSON";
 }
 
-.expressive-code .frame:has(pre[data-language="ts"]) .header::before {
+.expressive-code .frame:has(pre[data-language="ts"]) .header::before,
+.expressive-code .frame:has(pre[data-language="typescript"]) .header::before {
   content: "TypeScript";
 }
 

@@ -148,7 +148,7 @@ export async function renderRootIndex() {
 export async function renderFullBundle(prefix: string) {
   const section = sectionFor(prefix);
   const catalog = await getAgentDocCatalog();
-  const docs = catalog.docs.filter((doc) => doc.slug.startsWith(`${prefix}/`));
+  const docs = catalog.docs.filter((doc) => inSection(doc.slug, prefix));
   const chunks = [
     `# ${section.title} — complete Markdown bundle`,
     "",
@@ -291,18 +291,23 @@ function firstSidebarSlug(item: SidebarItem): string | undefined {
   return undefined;
 }
 
+/** The section's own page, such as "docs", and every page under it. */
+function inSection(slug: string, prefix: string) {
+  return slug === prefix || slug.startsWith(`${prefix}/`);
+}
+
 function sidebarSections(prefix: string, bySlug: ReadonlyMap<string, AgentDoc>) {
   const groups: Array<{ label: string; docs: AgentDoc[] }> = [];
 
   const walk = (items: readonly SidebarItem[], labels: readonly string[]) => {
     const docs = items.flatMap((item) => {
-      if (!item.slug || !item.slug.startsWith(`${prefix}/`)) return [];
+      if (!item.slug || !inSection(item.slug, prefix)) return [];
       const doc = bySlug.get(item.slug);
       if (!doc) throw new Error(`Missing sidebar documentation entry: ${item.slug}`);
       return [doc];
     });
-    if (docs.length > 0 && labels.length > 0) {
-      groups.push({ label: labels.join(" — "), docs });
+    if (docs.length > 0) {
+      groups.push({ label: labels.length > 0 ? labels.join(" — ") : "Overview", docs });
     }
     for (const item of items) {
       if (item.items && item.label) walk(item.items, [...labels, item.label]);
