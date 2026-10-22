@@ -1,0 +1,110 @@
+---
+import { getAgentDocCatalog, markdownPathForSlug } from "../catalog";
+
+const { id } = Astro.locals.starlightRoute;
+const catalog = await getAgentDocCatalog();
+const markdownHref = catalog.bySlug.has(id) ? markdownPathForSlug(id) : undefined;
+---
+
+{
+  markdownHref && (
+    <div class="nuaj-page-actions">
+      <nuaj-copy-markdown data-href={markdownHref}>
+        <button type="button" class="nuaj-page-action">
+          Copy as Markdown
+        </button>
+      </nuaj-copy-markdown>
+      <a class="nuaj-page-action" href={markdownHref}>
+        View as Markdown
+      </a>
+    </div>
+  )
+}
+
+<script>
+  class CopyMarkdown extends HTMLElement {
+    connectedCallback() {
+      const button = this.querySelector("button");
+      const href = this.dataset.href;
+      if (!button || !href) return;
+      const label = button.textContent?.trim() ?? "";
+
+      button.addEventListener("click", async () => {
+        button.disabled = true;
+        try {
+          await copyText(href);
+          button.textContent = "Copied";
+        } catch {
+          button.textContent = "Copy failed";
+        }
+        setTimeout(() => {
+          button.textContent = label;
+          button.disabled = false;
+        }, 2000);
+      });
+    }
+  }
+
+  async function fetchText(href: string) {
+    const response = await fetch(href);
+    if (!response.ok) throw new Error(`${href}: ${response.status}`);
+    return response.text();
+  }
+
+  // Safari only lets the clipboard be written inside the click, so hand it the
+  // pending fetch as a ClipboardItem rather than awaiting the text first.
+  async function copyText(href: string) {
+    if (typeof ClipboardItem !== "undefined" && navigator.clipboard.write) {
+      const blob = fetchText(href).then((text) => new Blob([text], { type: "text/plain" }));
+      await navigator.clipboard.write([new ClipboardItem({ "text/plain": blob })]);
+      return;
+    }
+    await navigator.clipboard.writeText(await fetchText(href));
+  }
+
+  if (!customElements.get("nuaj-copy-markdown")) {
+    customElements.define("nuaj-copy-markdown", CopyMarkdown);
+  }
+</script>
+
+<style is:global>
+  @layer starlight.components {
+    .nuaj-page-actions {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 0.5rem;
+    }
+
+    .nuaj-page-action {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2rem;
+      padding: 0.35rem 0.65rem;
+      border: 1px solid var(--sl-color-hairline-light);
+      border-radius: 0;
+      background: transparent;
+      color: var(--sl-color-text-accent);
+      font: inherit;
+      font-size: var(--sl-text-sm);
+      font-weight: 500;
+      line-height: 1.2;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nuaj-page-action:hover {
+      border-color: var(--sl-color-accent);
+      color: var(--sl-color-white);
+    }
+
+    .nuaj-page-action:disabled {
+      cursor: default;
+    }
+
+    @media print {
+      .nuaj-page-actions {
+        display: none;
+      }
+    }
+  }
+</style>

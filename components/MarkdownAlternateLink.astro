@@ -1,0 +1,9 @@
+---
+import { getAgentDocCatalog, markdownPathForSlug } from "../catalog";
+
+const { id } = Astro.locals.starlightRoute;
+const catalog = await getAgentDocCatalog();
+const markdownHref = catalog.bySlug.has(id) ? markdownPathForSlug(id) : undefined;
+---
+
+{markdownHref && <link rel="alternate" type="text/markdown" href={markdownHref} />}

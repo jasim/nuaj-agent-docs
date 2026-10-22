@@ -1,0 +1,38 @@
+{
+  "name": "nuaj-agent-docs",
+  "version": "0.1.0",
+  "description": "Starlight plugin that serves every documentation page as Markdown for coding agents, with llms.txt indexes and View/Copy as Markdown actions.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./index.ts",
+    "./catalog": "./catalog.ts",
+    "./components/*": "./components/*",
+    "./negotiation": {
+      "types": "./negotiation.d.ts",
+      "default": "./negotiation.js"
+    },
+    "./docs-index": {
+      "types": "./docs-index.d.ts",
+      "default": "./docs-index.js"
+    }
+  },
+  "files": [
+    "*.ts",
+    "*.js",
+    "components",
+    "routes",
+    "!*.test.js"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "mdast-util-from-markdown": "^2.0.3",
+    "unist-util-visit": "^5.1.0"
+  },
+  "peerDependencies": {
+    "@astrojs/starlight": ">=0.38.0",
+    "astro": ">=6.0.0"
+  }
+}

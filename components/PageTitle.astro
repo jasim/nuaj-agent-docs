@@ -1,0 +1,26 @@
+---
+import DefaultPageTitle from "@astrojs/starlight/components/PageTitle.astro";
+import PageActions from "./PageActions.astro";
+---
+
+<div class="nuaj-page-title">
+  <DefaultPageTitle />
+  <PageActions />
+</div>
+
+<style is:global>
+  @layer starlight.components {
+    .nuaj-page-title {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 30rem) {
+      .nuaj-page-title {
+        flex-direction: column;
+      }
+    }
+  }
+</style>
