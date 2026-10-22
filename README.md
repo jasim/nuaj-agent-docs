@@ -58,6 +58,33 @@ buttons use Starlight's colour variables; restyle them through
 `nuaj-agent-docs/catalog` exports the catalog and `textResponse` for a site's
 own Markdown routes.
 
+## Theme
+
+`nuaj-agent-docs/theme.css` is the shared look of the sites that use this
+plugin: Inter, two body weights, one cool neutral ramp on white, hairline rules
+instead of boxes and shadows, and colour only for state. It holds the design
+tokens and the Starlight and Expressive Code overrides, and needs Tailwind 4
+(`@tailwindcss/vite`):
+
+```css
+/* src/styles/site.css, listed in Starlight's customCss */
+@import "tailwindcss";
+@import "nuaj-agent-docs/theme.css";
+```
+
+```js
+import { themeExpressiveCode, themeHead } from "nuaj-agent-docs/theme";
+
+starlight({ customCss: ["./src/styles/site.css"], head: [...themeHead], expressiveCode: themeExpressiveCode });
+```
+
+`themeHead` loads Inter; `themeExpressiveCode` draws code blocks flat so the
+theme can rule them. A site changes its brand by redefining tokens after the
+import (`--link`, `--link-underline`, `--accent`, `--highlight`,
+`--sl-color-accent-low`, `--sl-color-accent-high`), and the site title shows
+the site's `/favicon.svg`. The theme's Tailwind colours are `docs-*`, as in
+`text-docs-ink`.
+
 ## Documentation index page
 
 `nuaj-agent-docs/docs-index` generates a landing page listing every sidebar
@@ -75,6 +102,10 @@ negotiated responses with `Vary: Accept`, and serve `.md` files as
 
 ## Development
 
-Consumers link this directory (`"nuaj-agent-docs": "link:../nuaj-agent-docs"`),
-so run `pnpm install` here once for its own dependencies. `pnpm test` runs the
-negotiation tests.
+Consumers depend on a pushed commit
+(`"nuaj-agent-docs": "github:jasim/nuaj-agent-docs#<commit>"`), so a change
+reaches a site only after it is pushed here and the site's hash is bumped. To
+try a change first, point the site's `node_modules/nuaj-agent-docs` symlink at
+this checkout and rebuild, then restore it with `pnpm install`. Run
+`pnpm install` here once for the plugin's own dependencies; `pnpm test` runs
+the negotiation tests.

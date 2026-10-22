@@ -1,0 +1,820 @@
+/*
+ * The shared look of the documentation sites: Inter, two body weights, one
+ * cool neutral ramp on plain white, rules instead of boxes, and colour only for
+ * state. Design tokens first, then Starlight and Expressive Code overrides.
+ *
+ * Requires Tailwind 4: import it after `@import "tailwindcss";` in the site's
+ * Starlight `customCss` file. A site restyles its brand by redefining the
+ * tokens after the import -- --link, --link-underline, --accent, --highlight
+ * and --sl-color-accent-low/-high, under :root and :root[data-theme="dark"].
+ * The site title's mark is the site's /favicon.svg.
+ */
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+
+  --color-docs-bg: var(--bg);
+  --color-docs-surface: var(--surface);
+  --color-docs-surface-soft: var(--surface-soft);
+  --color-docs-ink: var(--ink);
+  --color-docs-ink-soft: var(--ink-soft);
+  --color-docs-muted: var(--muted);
+  --color-docs-faint: var(--faint);
+  --color-docs-dim: var(--dim);
+  --color-docs-link: var(--link);
+  --color-docs-link-underline: var(--link-underline);
+  --color-docs-rule: var(--rule);
+  --color-docs-rule-strong: var(--rule-strong);
+  --color-docs-accent: var(--accent);
+  --color-docs-code: var(--surface-soft);
+}
+
+:root {
+  color-scheme: light;
+
+  /*
+   * One neutral axis, cool (hue ~210 deg), anchored on --ink #212529. The page
+   * ground is plain #ffffff -- no cream, no paper tint, nothing amber. Surfaces
+   * and rules are greys off the same hue, so nothing in the neutral ramp reads
+   * as a colour.
+   */
+  --bg: #ffffff;
+  --surface: #f6f8fa;
+  --surface-soft: #eef0f3;
+  --ink: #212529;
+  --ink-soft: #3e4349;
+  --muted: #6b7179;
+  --faint: #6b7179;
+  --dim: #52585e;
+  --link: #20566f;
+  --link-underline: #9cc8d6;
+  /*
+   * Two rule weights doing different structural jobs: --rule is the hairline
+   * inside components, --rule-strong divides rows and sections. The old values
+   * were inverted (--rule-strong was the *lighter* of the two) and both were
+   * so faint they read as nothing.
+   */
+  --rule: #d1d5d9;
+  --rule-strong: #adb5bd;
+  --accent: #4fb477;
+  --quote: #3e4349;
+  --highlight: #cfe3ee;
+
+  /*
+   * Two weights, and only two. Hierarchy comes from size, colour and rules;
+   * weight is reserved for the skim layer (headings and bold lead-ins).
+   */
+  --weight-text: 400;
+  --weight-emphasis: 500;
+  /*
+   * The title layer is the one place past two weights is allowed. 700 carries
+   * titles; the small uppercase labels drop to 600, which holds its counters at
+   * 11-13px where 700 starts closing up.
+   */
+  --weight-display: 700;
+  --weight-display-label: 600;
+  --display-tracking: -0.018em;
+
+  --article-max: 42rem;
+  --block-gap: 1.25rem;
+  --content-left-gap: clamp(1rem, 2vw, 2rem);
+  --homepage-pad-x: clamp(1.25rem, 5.8vw, 7.5rem);
+
+  --sl-color-bg: var(--bg);
+  --sl-color-bg-nav: var(--bg);
+  --sl-color-bg-sidebar: var(--bg);
+  --sl-color-bg-inline-code: var(--surface-soft);
+  --sl-color-bg-accent: var(--link);
+
+  --sl-color-text: var(--ink);
+  --sl-color-text-accent: var(--link);
+  --sl-color-text-invert: #ffffff;
+
+  --sl-color-gray-1: var(--ink);
+  --sl-color-gray-2: var(--ink-soft);
+  --sl-color-gray-3: var(--dim);
+  --sl-color-gray-4: var(--muted);
+  --sl-color-gray-5: var(--rule-strong);
+  --sl-color-gray-6: var(--rule);
+  --sl-color-gray-7: var(--surface);
+
+  --sl-color-accent-low: #dcecef;
+  --sl-color-accent: var(--link);
+  --sl-color-accent-high: #163a4b;
+
+  --sl-color-hairline-light: var(--rule);
+  --sl-color-hairline: var(--rule);
+  --sl-color-hairline-shade: var(--rule-strong);
+
+  --sl-font: var(--font-sans);
+  --sl-font-mono: var(--font-mono);
+  --sl-nav-height: 4.1rem;
+  --sl-nav-pad-x: var(--sl-sidebar-pad-x);
+  --sl-nav-pad-y: 1.1rem;
+  --sl-nav-gap: 1.5rem;
+  --sl-sidebar-width: 19rem;
+  --sl-sidebar-pad-x: clamp(1.25rem, 2.2vw, 2rem);
+  --sl-content-pad-x: clamp(1.25rem, 3vw, 2rem);
+  --sl-right-sidebar-width: 17rem;
+  --sl-right-sidebar-pad-x: 0.75rem;
+  --sl-text-code: 0.875rem;
+  --sl-text-code-sm: 0.8125rem;
+  --sl-content-width: var(--article-max);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #131517;
+  --surface: #1d1f22;
+  --surface-soft: #222528;
+  --ink: #e9ecef;
+  --ink-soft: #b2b7bd;
+  --muted: #868c93;
+  --faint: #868c93;
+  --dim: #90959c;
+  --link: #8bcdbb;
+  --link-underline: #3c7d7188;
+  --rule: #35393e;
+  --rule-strong: #4e545b;
+  --accent: #5fbf8d;
+  --quote: #b2b7bd;
+  --highlight: #24404d;
+}
+
+@media (min-width: 50rem) {
+  :root {
+    --sl-nav-height: 4.35rem;
+    --sl-nav-pad-y: 1.15rem;
+  }
+}
+
+@media (min-width: 64rem) and (max-width: 77.5rem) {
+  :root {
+    --sl-sidebar-width: 15.625rem;
+    --sl-sidebar-pad-x: 0.625rem;
+  }
+}
+
+@layer base {
+  html {
+    @apply bg-docs-bg font-sans antialiased;
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-docs-bg text-docs-ink font-sans text-base leading-[1.55] tracking-normal;
+    font-weight: var(--weight-text);
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1,
+      "calt" 1;
+  }
+
+  ::selection {
+    background: var(--highlight);
+    color: var(--ink);
+  }
+
+  /*
+   * The two-weight rule has to be enforced on the bare elements too, or the
+   * browser default (bolder) reintroduces a third weight wherever markdown
+   * emits <strong>/<b> outside a styled wrapper.
+   */
+  strong,
+  b {
+    font-weight: var(--weight-emphasis);
+  }
+
+  /*
+   * The source design defines no :focus or :focus-visible anywhere, which is
+   * the one thing here not worth copying -- its keyboard ring is invisible on
+   * inverted buttons. Focus is state, so it is allowed to spend colour.
+   */
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  a {
+    color: var(--link);
+    text-decoration: underline dotted;
+    text-decoration-color: var(--link-underline);
+    text-underline-offset: 2px;
+  }
+
+  a:hover {
+    color: var(--link);
+    text-decoration-style: solid;
+    text-decoration-color: var(--link);
+  }
+
+  code {
+    @apply font-mono text-[0.875rem];
+  }
+
+  code:not(pre code) {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.header {
+  border-bottom-color: transparent !important;
+}
+
+.header .right-group,
+.header .social-icons {
+  gap: 1.4rem;
+}
+
+.header .social-icons::after {
+  border-color: var(--rule) !important;
+  height: 1.15rem !important;
+}
+
+.site-title {
+  color: var(--faint);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: var(--weight-display-label);
+  gap: 0.46rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.site-title:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.site-title::before {
+  background: url("/favicon.svg") center / contain no-repeat;
+  content: "";
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 1.32rem;
+  width: 1.32rem;
+}
+
+.site-title img {
+  height: 1.32rem;
+}
+
+.right-group a,
+.right-group button,
+starlight-theme-select select,
+starlight-lang-select select {
+  color: var(--ink-soft);
+}
+
+.right-group a:hover,
+.right-group button:hover,
+starlight-theme-select select:hover,
+starlight-lang-select select:hover {
+  color: var(--ink);
+}
+
+@media (min-width: 50rem) {
+  [data-has-sidebar] header.header > .header {
+    display: flex;
+    gap: 0;
+    justify-content: flex-start;
+  }
+
+  [data-has-sidebar] header.header > .header > .title-wrapper {
+    flex: 0 0 calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x));
+    margin: 0;
+    padding: 0;
+  }
+
+  [data-has-sidebar] header.header > .header > .sl-flex:not(.title-wrapper):not(.right-group) {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-inline-start: var(--sl-content-pad-x);
+  }
+
+  [data-has-sidebar] header.header > .header > .right-group {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+  }
+}
+
+@media (min-width: 72rem) {
+  [data-has-sidebar][data-has-toc] header.header > .header > .sl-flex:not(.title-wrapper):not(.right-group) {
+    margin-inline-start: var(--content-left-gap);
+  }
+}
+
+#starlight__sidebar a[aria-current="page"],
+#starlight__sidebar a[aria-current="page"]:hover,
+#starlight__sidebar a[aria-current="page"]:focus {
+  font-weight: var(--weight-emphasis);
+  color: var(--sl-color-accent-high);
+  background-color: var(--surface);
+}
+
+#starlight__sidebar {
+  border-inline-end-color: transparent;
+}
+
+#starlight__sidebar .sidebar-content {
+  gap: 0.95rem;
+  padding-bottom: 2rem;
+  padding-top: 1.2rem;
+}
+
+#starlight__sidebar ul {
+  --sl-sidebar-item-padding-inline: 0.5rem;
+}
+
+#starlight__sidebar ul ul {
+  margin-top: 0.25rem;
+}
+
+#starlight__sidebar ul ul li {
+  border-color: var(--rule);
+}
+
+#starlight__sidebar .top-level > li + li {
+  margin-top: 1rem;
+}
+
+#starlight__sidebar .large {
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: var(--weight-display-label);
+  letter-spacing: 0.03em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+#starlight__sidebar a,
+#starlight__sidebar summary {
+  color: var(--dim);
+  font-size: 0.90625rem;
+  font-weight: var(--weight-text);
+  line-height: 1.35;
+}
+
+#starlight__sidebar a {
+  border-radius: 0;
+  padding-block: 0.28em;
+}
+
+#starlight__sidebar summary {
+  padding-block: 0.2em;
+}
+
+#starlight__sidebar summary:hover,
+#starlight__sidebar summary:focus-visible,
+#starlight__sidebar a:hover,
+#starlight__sidebar a:focus-visible {
+  color: var(--link);
+}
+
+#starlight__sidebar summary:hover .large,
+#starlight__sidebar summary:focus-visible .large {
+  color: var(--link);
+}
+
+#starlight__sidebar .caret {
+  color: var(--faint);
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+}
+
+#starlight__sidebar ul ul a {
+  color: var(--dim);
+  font-size: 0.86rem;
+  font-weight: var(--weight-text);
+}
+
+#starlight__sidebar ul ul a[aria-current="page"] {
+  color: var(--sl-color-accent-high);
+}
+
+.main-frame {
+  padding-top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height) + 1.35rem);
+}
+
+@media (min-width: 50rem) {
+  .main-frame {
+    padding-top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height) + 1.8rem);
+  }
+}
+
+@media (min-width: 72rem) {
+  .main-frame {
+    padding-top: calc(var(--sl-nav-height) + 1.8rem);
+  }
+}
+
+@media (min-width: 72rem) {
+  .right-sidebar-container {
+    width: calc(var(--sl-right-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-right-sidebar-width)) / 2);
+  }
+
+  [data-has-sidebar][data-has-toc] .main-pane {
+    --sl-content-margin-inline: var(--content-left-gap) auto;
+    width: calc(var(--sl-content-width) + (100% - var(--sl-content-width) - var(--sl-right-sidebar-width)) / 2);
+  }
+
+  .right-sidebar-panel {
+    padding: 0.85rem var(--sl-right-sidebar-pad-x);
+  }
+
+  .right-sidebar-panel .sl-container {
+    width: calc(var(--sl-right-sidebar-width) - 2 * var(--sl-right-sidebar-pad-x));
+    max-width: none;
+  }
+
+  .right-sidebar-panel h2 {
+    color: var(--faint);
+    margin-bottom: 0.55rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+      font-weight: var(--weight-display-label);
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .right-sidebar-panel a {
+    color: var(--dim);
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .right-sidebar {
+    border-inline-start-color: transparent;
+  }
+}
+
+.sl-markdown-content {
+  @apply text-[1.02rem] leading-[1.65] text-docs-ink;
+}
+
+.sl-markdown-content p {
+  @apply mt-0 text-docs-ink;
+  font-weight: var(--weight-text);
+  line-height: 1.68;
+  margin-bottom: var(--block-gap);
+}
+
+.sl-markdown-content li {
+  @apply my-0 text-docs-ink;
+  line-height: 1.6;
+}
+
+.sl-markdown-content ul,
+.sl-markdown-content ol {
+  @apply mt-[0.7rem] mb-6 pl-7;
+}
+
+.sl-markdown-content ul {
+  list-style: disc outside;
+}
+
+.sl-markdown-content ol {
+  list-style: decimal outside;
+}
+
+.sl-markdown-content li + li {
+  margin-top: 0.55rem;
+}
+
+.sl-markdown-content li > :last-child {
+  margin-bottom: 0;
+}
+
+.sl-markdown-content li::marker {
+  @apply text-docs-dim;
+}
+
+/*
+ * The title layer -- and only the title layer -- runs in the display face.
+ * Body copy stays Inter, so the contrast between the two is what marks a
+ * heading, not a jump in size alone.
+ */
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) {
+  @apply text-docs-ink;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--display-tracking);
+}
+
+.sl-markdown-content .sl-heading-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+  margin-top: 3.35rem;
+  margin-bottom: 1rem;
+}
+
+.sl-markdown-content .sl-heading-wrapper.level-h2 h2 {
+  margin-block: 0;
+}
+
+.sl-markdown-content .sl-heading-wrapper .sl-anchor-link {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  margin-inline-start: 0;
+  font-size: 1rem;
+}
+
+.sl-markdown-content .sl-heading-wrapper .sl-anchor-icon,
+.sl-markdown-content .sl-heading-wrapper .sl-anchor-link svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.content-panel h1,
+.sl-markdown-content h1,
+h1.page-title,
+h1#starlight__page-title {
+  @apply mt-0 mb-8 text-[2.45rem] leading-none;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  letter-spacing: -0.02em;
+  max-width: 36rem;
+}
+
+.sl-markdown-content h2 {
+  @apply mt-12 mb-4 text-[1.58rem] leading-tight;
+  font-weight: var(--weight-display);
+}
+
+.sl-markdown-content h3 {
+  @apply mt-9 mb-3 text-[1.08rem] leading-tight;
+  font-weight: var(--weight-display);
+}
+
+.sl-markdown-content h4 {
+  @apply mt-7 mb-2 text-[0.96rem] leading-tight;
+  font-weight: var(--weight-display);
+}
+
+.sl-markdown-content strong {
+  @apply text-docs-ink font-medium;
+}
+
+.sl-markdown-content a {
+  color: var(--link);
+}
+
+.sl-markdown-content :not(pre) > code {
+  @apply rounded-none border border-docs-rule bg-docs-code px-[0.35em] py-[0.12em] font-mono text-[0.875rem] font-normal text-docs-ink;
+}
+
+.sl-markdown-content pre,
+.expressive-code .frame pre,
+.expressive-code pre {
+  @apply my-0 overflow-x-auto overflow-y-visible rounded-none border-0 bg-transparent p-0 font-mono text-[0.875rem] leading-[1.5] text-docs-ink shadow-none;
+}
+
+.sl-markdown-content pre code,
+.expressive-code pre code {
+  @apply bg-transparent text-[inherit] text-docs-ink;
+}
+
+.sl-markdown-content pre code {
+  @apply p-0;
+}
+
+.expressive-code .frame pre > code {
+  padding-block: 1.5rem;
+}
+
+.expressive-code {
+  --ec-brdRad: 0;
+  --ec-brdCol: transparent;
+  --ec-codePadInl: 1.5rem;
+  --ec-frm-edBg: transparent;
+  --ec-frm-trmBg: transparent;
+  --ec-frm-edTabBarBg: transparent;
+  --ec-frm-edTabBarBrdBtmCol: transparent;
+  --ec-frm-trmTtbBg: transparent;
+  --ec-frm-edActTabBg: transparent;
+  --ec-frm-tooltipSuccessBg: var(--bg);
+  @apply relative my-5 max-w-none overflow-hidden rounded-none border border-docs-rule bg-docs-bg text-[0.875rem] shadow-none;
+}
+
+.expressive-code .frame,
+.expressive-code .frame.has-title:not(.is-terminal),
+.expressive-code .frame.is-terminal {
+  @apply border-0 bg-transparent shadow-none;
+}
+
+.expressive-code .frame .code,
+.expressive-code .frame pre {
+  @apply bg-transparent;
+}
+
+.expressive-code .frame.is-terminal .header,
+.expressive-code .frame .header {
+  @apply flex h-12 items-center border-b border-docs-rule bg-docs-surface px-3 text-[0.68rem] font-medium text-docs-muted uppercase;
+  letter-spacing: 0.04em;
+}
+
+.expressive-code .frame .header::before {
+  content: "Code";
+}
+
+.expressive-code .frame.has-title:not(.is-terminal) .header {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: auto;
+  padding-block: 0.65rem;
+}
+
+/* Expressive Code positions this pseudo-element over its title by default. */
+.expressive-code .frame.has-title:not(.is-terminal) .header::before {
+  inset: auto;
+  padding: 0;
+  position: static;
+}
+
+.expressive-code .frame.has-title:not(.is-terminal) .title {
+  border: 0;
+  margin-block-start: 0;
+  padding: 0;
+}
+
+.expressive-code .frame.has-title:not(.is-terminal) .title::after,
+.expressive-code .frame.has-title:not(.is-terminal) .header::after {
+  display: none;
+}
+
+.expressive-code .frame:has(pre[data-language="bash"]) .header::before,
+.expressive-code .frame:has(pre[data-language="sh"]) .header::before {
+  content: "Shell";
+}
+
+.expressive-code .frame:has(pre[data-language="css"]) .header::before {
+  content: "CSS";
+}
+
+.expressive-code .frame:has(pre[data-language="json"]) .header::before {
+  content: "JSON";
+}
+
+.expressive-code .frame:has(pre[data-language="ts"]) .header::before {
+  content: "TypeScript";
+}
+
+.expressive-code .frame:has(pre[data-language="tsx"]) .header::before {
+  content: "TSX";
+}
+
+.expressive-code .frame .header::after {
+  content: "";
+  flex: 1 1 auto;
+}
+
+.expressive-code .copy {
+  @apply absolute top-[0.25rem] right-[0.35rem] z-[2] flex items-center;
+}
+
+.expressive-code .copy button {
+  @apply relative inline-flex h-6 cursor-pointer items-center rounded-none border border-transparent bg-transparent pr-[1.35rem] pl-[0.45rem] text-[0.68rem] leading-none font-medium text-docs-dim transition-colors;
+  opacity: 1;
+  width: auto;
+}
+
+.expressive-code .copy button:hover,
+.expressive-code .copy button:focus-visible {
+  @apply border-docs-rule bg-docs-bg text-docs-ink outline-none;
+}
+
+.expressive-code .copy button::before {
+  content: "Copy";
+  border: 0;
+  opacity: 1;
+  position: static;
+}
+
+.expressive-code .copy button::after {
+  background-color: currentColor;
+  inset: 50% 0.42rem auto auto;
+  block-size: 0.75rem;
+  inline-size: 0.75rem;
+  margin: 0;
+  transform: translateY(-50%);
+}
+
+.expressive-code .copy button div {
+  @apply hidden;
+}
+
+.expressive-code .copy .feedback {
+  @apply absolute top-[calc(100%+0.25rem)] right-0 rounded-none border border-docs-rule bg-docs-bg px-2 py-1 text-[0.68rem] leading-none text-docs-dim shadow-none;
+}
+
+.sl-markdown-content blockquote {
+  @apply relative my-5 ml-0 border-0 border-l-[3px] border-docs-accent bg-transparent py-2 pr-4 pl-4 text-docs-ink-soft;
+  color: var(--quote);
+  font-style: italic;
+}
+
+.sl-markdown-content blockquote::before {
+  content: "\201C";
+  @apply pointer-events-none absolute top-[-0.2rem] left-[0.35rem] text-[2.5rem] leading-none text-docs-accent opacity-[0.18];
+  font-style: normal;
+}
+
+.sl-markdown-content blockquote p {
+  color: inherit;
+}
+
+.sl-markdown-content blockquote p:last-child {
+  @apply mb-0;
+}
+
+.sl-markdown-content hr {
+  @apply my-8 border-0 border-t border-docs-rule;
+}
+
+.sl-markdown-content table {
+  @apply mb-6 border-separate border-spacing-0 overflow-hidden rounded-none border border-docs-rule text-[0.85rem] shadow-none;
+}
+
+.sl-markdown-content :is(th, td) {
+  @apply border-b border-docs-rule px-3 py-2;
+}
+
+.sl-markdown-content th {
+  @apply bg-docs-surface text-left text-docs-ink font-medium;
+}
+
+.content-panel {
+  padding-block: 0;
+  padding-inline: var(--sl-content-pad-x);
+}
+
+.content-panel + .content-panel {
+  @apply border-t-0 pt-0;
+}
+
+.pagination-links {
+  @apply mt-10 gap-4 border-t border-docs-rule pt-5 text-[0.72rem] text-docs-muted;
+}
+
+.pagination-links a {
+  @apply rounded-none border border-docs-rule bg-docs-bg px-3 py-3 text-docs-dim no-underline shadow-none;
+}
+
+.pagination-links a:hover {
+  @apply border-docs-accent text-docs-link;
+}
+
+.pagination-links a .link-title {
+  @apply text-[0.85rem] text-docs-ink;
+}
+
+footer.sl-flex,
+footer .meta {
+  @apply text-[0.72rem] text-docs-muted;
+}
+
+footer a {
+  @apply text-docs-muted;
+}
+
+footer a:hover {
+  @apply text-docs-link;
+}
+
+@media (max-width: 900px) {
+  .sl-markdown-content {
+    @apply text-[0.9rem];
+  }
+
+  .site-title {
+    font-size: 0.78rem;
+  }
+
+  .content-panel h1,
+  .sl-markdown-content h1,
+  h1.page-title,
+  h1#starlight__page-title {
+    font-size: clamp(2rem, 11vw, 2.75rem);
+  }
+}

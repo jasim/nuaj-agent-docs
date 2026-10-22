@@ -7,6 +7,8 @@
   "exports": {
     ".": "./index.ts",
     "./catalog": "./catalog.ts",
+    "./theme": "./theme.ts",
+    "./theme.css": "./theme.css",
     "./components/*": "./components/*",
     "./negotiation": {
       "types": "./negotiation.d.ts",
@@ -20,6 +22,7 @@
   "files": [
     "*.ts",
     "*.js",
+    "*.css",
     "components",
     "routes",
     "!*.test.js"
